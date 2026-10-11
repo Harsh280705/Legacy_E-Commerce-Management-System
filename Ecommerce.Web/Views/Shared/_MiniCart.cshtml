@@ -6,7 +6,7 @@
         <ul class="yb-mini-list">
             @foreach (var l in Model.Lines.Take(4)) {
                 <li>
-                    <img src="@l.ImageUrl" alt="@l.ProductName" onerror="this.src='/Images/placeholder.png'" />
+                    <img src="@l.ImageUrl" alt="@l.ProductName" loading="lazy" decoding="async" onerror="this.src='/Images/placeholder.png'" />
                     <span class="yb-mini-info"><strong>@l.ProductName</strong>
                     @if (!string.IsNullOrEmpty(l.VariantLabel)) { <small>@l.VariantLabel</small> }
                     <small>Qty @l.Quantity</small></span>

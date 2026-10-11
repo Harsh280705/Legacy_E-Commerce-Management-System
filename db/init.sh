@@ -31,4 +31,7 @@ if [ "${SEED_SIZE:-100}" = "1000" ]; then
 else
   run seed.sql
 fi
+# Per-product photo fixup: idempotent UPDATEs of ProductImages.ImageUrl to the
+# locally stored catalog photos (no-ops for slugs that do not exist).
+run seed_product_images.sql
 echo "DB init complete."

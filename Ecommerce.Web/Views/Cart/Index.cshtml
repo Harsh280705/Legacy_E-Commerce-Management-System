@@ -1,6 +1,10 @@
 @model Ecommerce.Core.ViewModels.CartViewModel
 @{ ViewBag.Title = "Cart"; }
 <div class="container yb-page">
-    <h1>Your cart</h1>
+    <div class="yb-crumb"><a href="/">Home</a> &rsaquo; Your cart</div>
+    <div class="yb-page-head">
+        <h1>Your cart</h1>
+        @if (Model.Lines.Count > 0) { <p>@Model.ItemCount item(s) — review quantities, then head to checkout.</p> }
+    </div>
     @Html.Partial("_CartLines", Model)
 </div>

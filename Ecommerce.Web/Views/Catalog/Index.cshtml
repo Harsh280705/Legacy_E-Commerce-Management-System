@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Shop";
     var cats = ViewBag.Categories as System.Collections.Generic.IList<Ecommerce.Core.ViewModels.CategoryNavViewModel>;
-    string sort = (ViewBag.Sort as string) ?? "name_asc";
+    string sort = (ViewBag.Sort as string) ?? "recommended";
     int size = ViewBag.Size != null ? (int)ViewBag.Size : 12;
     string mode = (ViewBag.Mode as string) ?? "pagination";
     string q = (ViewBag.Query as string) ?? "";
@@ -12,39 +12,47 @@
     string infPressed = mode == "infinite" ? "true" : "false";
 }
 <div class="container yb-page">
+    <div class="yb-crumb"><a href="/">Home</a> &rsaquo; Shop@(string.IsNullOrWhiteSpace(q) ? "" : " &rsaquo; \"" + q + "\"")</div>
+    <div class="yb-page-head">
+        <h1>@(string.IsNullOrWhiteSpace(q) ? "Shop all products" : "Results for \"" + q + "\"")</h1>
+        <p>@Model.TotalCount product(s) across every department. Use filters to narrow things down.</p>
+    </div>
     <div class="row">
         <aside class="col-sm-3">
-            <h3>Categories</h3>
-            <div class="list-group" id="cat-nav">
-                @if (cats != null) {
-                    foreach (var c in cats) {
-                        <a href="/c/@c.Slug" class="list-group-item" data-cat="@c.CategoryId">@c.Name <span class="badge">@c.ProductCount</span></a>
-                        foreach (var ch in c.Children) {
-                            <a href="/c/@ch.Slug" class="list-group-item yb-sub" data-cat="@ch.CategoryId">&mdash; @ch.Name</a>
+            <div class="yb-side-card">
+                <h3>Departments</h3>
+                <div class="list-group" id="cat-nav">
+                    @if (cats != null) {
+                        foreach (var c in cats) {
+                            <a href="/c/@c.Slug" class="list-group-item" data-cat="@c.CategoryId">@c.Name <span class="badge">@c.ProductCount</span></a>
+                            foreach (var ch in c.Children) {
+                                <a href="/c/@ch.Slug" class="list-group-item yb-sub" data-cat="@ch.CategoryId">&mdash; @ch.Name</a>
+                            }
                         }
                     }
-                }
+                </div>
             </div>
         </aside>
         <div class="col-sm-9">
-            <form method="get" action="/Catalog/Index" class="yb-filters" id="filter-form" role="search" aria-label="Product filters">
-                <input type="text" name="q" class="form-control" placeholder="Search..." value="@q" aria-label="Search products" />
-                <select name="sort" class="form-control" id="sort-sel" aria-label="Sort products">
-                    <option value="name_asc" @(sort=="name_asc"?"selected":"")>Name A–Z</option>
-                    <option value="name_desc" @(sort=="name_desc"?"selected":"")>Name Z–A</option>
-                    <option value="price_asc" @(sort=="price_asc"?"selected":"")>Price low–high</option>
-                    <option value="price_desc" @(sort=="price_desc"?"selected":"")>Price high–low</option>
-                    <option value="newest" @(sort=="newest"?"selected":"")>Newest</option>
-                </select>
-                <select name="size" class="form-control" id="size-sel" aria-label="Products per page">
-                    <option value="12" @(size==12?"selected":"")>12 / page</option>
-                    <option value="24" @(size==24?"selected":"")>24 / page</option>
-                </select>
-                <input type="hidden" name="mode" value="@mode" />
-                <button class="btn btn-default" type="submit">Apply</button>
-            </form>
-            <div class="yb-browse-bar">
-                <p class="text-muted yb-result-count" role="status">@Model.TotalCount product(s)@(!string.IsNullOrWhiteSpace(q) ? " for \"" + q + "\"" : "")</p>
+            <div class="yb-filterbar">
+                <p class="text-muted yb-result-count" role="status"><strong>@Model.TotalCount product(s)</strong>@(!string.IsNullOrWhiteSpace(q) ? " for \"" + q + "\"" : "")</p>
+                <form method="get" action="/Catalog/Index" class="yb-filters" id="filter-form" role="search" aria-label="Product filters">
+                    <input type="text" name="q" class="form-control" placeholder="Search kurtas, sneakers, lamps..." value="@q" aria-label="Search products" />
+                    <select name="sort" class="form-control" id="sort-sel" aria-label="Sort products">
+                        <option value="recommended" @(sort=="recommended"?"selected":"")>Recommended</option>
+                        <option value="name_asc" @(sort=="name_asc"?"selected":"")>Name A–Z</option>
+                        <option value="name_desc" @(sort=="name_desc"?"selected":"")>Name Z–A</option>
+                        <option value="price_asc" @(sort=="price_asc"?"selected":"")>Price low–high</option>
+                        <option value="price_desc" @(sort=="price_desc"?"selected":"")>Price high–low</option>
+                        <option value="newest" @(sort=="newest"?"selected":"")>Newest</option>
+                    </select>
+                    <select name="size" class="form-control" id="size-sel" aria-label="Products per page">
+                        <option value="12" @(size==12?"selected":"")>12 / page</option>
+                        <option value="24" @(size==24?"selected":"")>24 / page</option>
+                    </select>
+                    <input type="hidden" name="mode" value="@mode" />
+                    <button class="btn btn-default" type="submit">Apply</button>
+                </form>
                 <div class="btn-group yb-mode-toggle" role="group" aria-label="Browsing mode">
                     <a href="/Catalog/Index?q=@q&sort=@sort&size=@size&mode=pagination" class="btn btn-default btn-sm @(mode=="pagination"?"active":"")" aria-pressed="@pagPressed">Pagination</a>
                     <a href="/Catalog/Index?q=@q&sort=@sort&size=@size&mode=infinite" class="btn btn-default btn-sm @(mode=="infinite"?"active":"")" aria-pressed="@infPressed">Infinite scroll</a>

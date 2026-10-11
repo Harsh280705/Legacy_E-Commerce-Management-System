@@ -69,7 +69,7 @@
     }
     function gridDataUrl(page) {
         var g = gridParams();
-        var url = '/Catalog/GridData?page=' + page + '&sort=' + encodeURIComponent(g.sort || 'name_asc') + '&size=' + encodeURIComponent(g.size || 12);
+        var url = '/Catalog/GridData?page=' + page + '&sort=' + encodeURIComponent(g.sort || 'recommended') + '&size=' + encodeURIComponent(g.size || 12);
         if (g.slug) url += '&slug=' + encodeURIComponent(g.slug);
         else url += '&q=' + encodeURIComponent(g.q || '');
         if (g.cat) url += '&categoryId=' + encodeURIComponent(g.cat);
@@ -226,7 +226,7 @@
         $(document).on('change', '#sort-sel, #size-sel', function () {
             var g = gridParams();
             if (g.mode === 'infinite') return; // full reload keeps mode + filters
-            var sort = $('#sort-sel').val();
+            var sort = $('#sort-sel').val() || g.sort || 'recommended';
             var url = g.slug ? '/Catalog/Grid?slug=' + encodeURIComponent(g.slug) + '&sort=' + encodeURIComponent(sort)
                              : '/Catalog/Grid?q=' + encodeURIComponent(g.q || '') + '&sort=' + encodeURIComponent(sort);
             $('#product-grid').addClass('yb-loading');

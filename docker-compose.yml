@@ -39,6 +39,7 @@ services:
       - ./db/schema.sql:/db/schema.sql:ro
       - ./db/seed.sql:/db/seed.sql:ro
       - ./db/seed_1000.sql:/db/seed_1000.sql:ro
+      - ./db/seed_product_images.sql:/db/seed_product_images.sql:ro
       - ./db/init.sh:/db/init.sh:ro
     networks:
       - legacyecommerce_net

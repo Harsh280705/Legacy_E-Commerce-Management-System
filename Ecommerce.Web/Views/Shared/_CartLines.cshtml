@@ -18,10 +18,14 @@
                 @foreach (var l in Model.Lines) {
                     <tr data-line="@l.CartItemId" data-stock="@l.StockAvailable">
                         <td>
-                            <img class="yb-thumb" src="@l.ImageUrl" alt="@l.ProductName" onerror="this.src='/Images/placeholder.png'" />
-                            <a href="/p/@l.ProductSlug">@l.ProductName</a>
-                            @if (!string.IsNullOrEmpty(l.VariantLabel)) { <div class="text-muted yb-variant">@l.VariantLabel</div> }
-                            @if (l.StockAvailable <= 5) { <div class="yb-lowstock">Only @l.StockAvailable left</div> }
+                            <div class="yb-cart-item">
+                                <img class="yb-thumb" src="@l.ImageUrl" alt="@l.ProductName" loading="lazy" decoding="async" onerror="this.src='/Images/placeholder.png'" />
+                                <div class="yb-cart-item-tx">
+                                    <a href="/p/@l.ProductSlug">@l.ProductName</a>
+                                    @if (!string.IsNullOrEmpty(l.VariantLabel)) { <div class="text-muted yb-variant">@l.VariantLabel</div> }
+                                    @if (l.StockAvailable <= 5) { <div class="yb-lowstock">Only @l.StockAvailable left</div> }
+                                </div>
+                            </div>
                         </td>
                         <td class="yb-nowrap">&#8377;@l.UnitPrice.ToString("N2")</td>
                         <td>

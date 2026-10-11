@@ -122,6 +122,7 @@
     <Content Include="Content\*.css" />
     <Content Include="Scripts\*.js" />
     <Content Include="Images\*" />
+    <Content Include="Images\products\*" />
     <Content Include="Views\**\*.cshtml" />
     <Content Include="Views\Web.config" />
   </ItemGroup>

@@ -1,16 +1,17 @@
 @model Ecommerce.Core.ViewModels.ProductCardViewModel
 <article class="yb-card" data-pid="@Model.ProductId">
     <a class="yb-card-img" href="/p/@Model.Slug" tabindex="0" aria-label="@Model.Name">
-        <img src="@Model.ImageUrl" alt="@Model.Name" loading="lazy" onerror="this.src='/Images/placeholder.png'" />
+        <img src="@Model.ImageUrl" alt="@Model.Name" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/Images/placeholder.png'" />
         @if (Model.DiscountPct.HasValue) { <span class="yb-badge">-@Model.DiscountPct%</span> }
         @if (!Model.InStock) { <span class="yb-badge yb-out">Out of stock</span> }
     </a>
     <div class="yb-card-body">
         <div class="yb-card-cat">@Model.CategoryName</div>
-        <a class="yb-card-name" href="/p/@Model.Slug">@Model.Name</a>
+        <a class="yb-card-name" href="/p/@Model.Slug" title="@Model.Name">@Model.Name</a>
         <div class="yb-card-price">
             <strong>&#8377;@Model.Price.ToString("N2")</strong>
             @if (Model.CompareAtPrice.HasValue) { <s>&#8377;@Model.CompareAtPrice.Value.ToString("N2")</s> }
+            @if (Model.DiscountPct.HasValue) { <span class="yb-save-tx">@Model.DiscountPct% off</span> }
         </div>
         @if (Model.InStock) {
             <form method="post" action="/Cart/Add" class="yb-add-form">
@@ -20,7 +21,7 @@
                 <button type="submit" class="btn btn-primary btn-block yb-add-btn" data-add="@Model.ProductId" data-name="@Model.Name">Add to cart</button>
             </form>
         } else {
-            <button class="btn btn-default btn-block" disabled>Notify me</button>
+            <div class="yb-add-form"><button class="btn btn-default btn-block" disabled>Notify me</button></div>
         }
     </div>
 </article>

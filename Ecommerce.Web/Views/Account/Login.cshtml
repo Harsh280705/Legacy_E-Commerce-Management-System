@@ -1,14 +1,24 @@
 @model Ecommerce.Core.ViewModels.LoginViewModel
 @{ ViewBag.Title = "Login"; }
 <div class="container yb-page yb-narrow">
-    <h1>Login</h1>
-    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "yb-form" })) {
-        @Html.Raw(Context.Items["AF_TOKEN_HTML"])
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group"><label>Email</label>@Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })@Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })</div>
-        <div class="form-group"><label>Password</label>@Html.PasswordFor(m => m.Password, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })</div>
-        <div class="checkbox"><label>@Html.CheckBoxFor(m => m.RememberMe) Remember me</label></div>
-        <button class="btn btn-primary btn-block" type="submit">Login</button>
-    }
-    <p>New here? <a href="/Account/Register">Create an account</a></p>
+    <div class="yb-crumb"><a href="/">Home</a> &rsaquo; Login</div>
+    <div class="yb-page-head"><h1>Welcome back</h1><p>Log in for faster checkout and order history.</p></div>
+    <div class="yb-form yb-auth-wrap">
+        <div class="yb-auth-side">
+            <h2>Yantra Bazaar members get more</h2>
+            <p>One account for the whole store.</p>
+            <ul><li>Track orders anytime</li><li>Faster demo checkout</li><li>Early festive deals</li></ul>
+        </div>
+        <div class="yb-auth-form">
+            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post)) {
+                @Html.Raw(Context.Items["AF_TOKEN_HTML"])
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group"><label>Email</label>@Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "you@example.in" })@Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })</div>
+                <div class="form-group"><label>Password</label>@Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Your password" })@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })</div>
+                <div class="checkbox"><label>@Html.CheckBoxFor(m => m.RememberMe) Remember me</label></div>
+                <button class="btn btn-primary btn-block btn-lg" type="submit">Login</button>
+            }
+            <p class="yb-auth-alt">New here? <a href="/Account/Register">Create an account</a></p>
+        </div>
+    </div>
 </div>

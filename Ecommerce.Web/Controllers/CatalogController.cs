@@ -22,7 +22,7 @@ namespace Ecommerce.Web.Controllers
             ViewBag.Categories = _catalog.GetCategoryTree();
             ViewBag.Query = q;
             ViewBag.CategoryId = categoryId;
-            ViewBag.Sort = sort ?? "name_asc";
+            ViewBag.Sort = sort ?? "recommended";
             ViewBag.Size = PageSize(size);
             ViewBag.Mode = (mode ?? "pagination").ToLowerInvariant() == "infinite" ? "infinite" : "pagination";
             var result = _catalog.SearchProducts(q, categoryId, sort, page, PageSize(size));
@@ -37,6 +37,7 @@ namespace Ecommerce.Web.Controllers
             ViewBag.Mode = (mode ?? "pagination").ToLowerInvariant() == "infinite" ? "infinite" : "pagination";
             var vm = _catalog.GetCategoryPage(slug, sort, page, PageSize(size));
             if (vm == null) return HttpNotFound("Category not found.");
+            vm.Sort = sort ?? "recommended";
             return View(vm);
         }
 

@@ -5,38 +5,45 @@
     var deals = ViewBag.Discounted as System.Collections.Generic.IList<Ecommerce.Core.ViewModels.ProductCardViewModel>;
     var cats = ViewBag.Categories as System.Collections.Generic.IList<Ecommerce.Core.ViewModels.CategoryNavViewModel>;
 }
-<section class="yb-hero">
-    <div class="container">
-        <div class="yb-hero-text">
-            <span class="yb-kicker">New season &middot; Festive edit</span>
-            <h1>Everyday essentials, crafted for India</h1>
-            <p>Fashion, footwear, home and tech — honest prices, easy returns, demo checkout.</p>
-            <p><a href="/Catalog/Index" class="btn btn-primary btn-lg">Shop all products</a>
-            <a href="/Catalog/Index?sort=newest" class="btn btn-default btn-lg">New arrivals</a></p>
-        </div>
+@functions {
+    public string CatIcon(string slug) {
+        slug = (slug ?? "").ToLowerInvariant();
+        if (slug.Contains("footwear")) return "footwear";
+        if (slug.Contains("fashion")) return "fashion";
+        if (slug.Contains("decor")) return "decor";
+        if (slug.Contains("kitchen") || slug.Contains("home")) return "home";
+        if (slug.Contains("electronic") || slug.Contains("audio") || slug.Contains("mobile")) return "tech";
+        if (slug.Contains("beauty")) return "beauty";
+        if (slug.Contains("sport") || slug.Contains("fitness")) return "sports";
+        if (slug.Contains("book")) return "books";
+        if (slug.Contains("toy")) return "toys";
+        return "placeholder";
+    }
+}
+<div class="container yb-page">
+    <div class="yb-page-head">
+        <h1>Shop everyday essentials</h1>
+        <p>Fashion, footwear, home and tech — honest prices, cash on delivery and easy returns.</p>
     </div>
-</section>
-<section class="container yb-section">
-    <h2>Shop by category</h2>
-    <div class="yb-cat-tiles">
+    <div class="yb-cat-tiles yb-strip">
         @if (cats != null) {
             foreach (var c in cats) {
-                <a class="yb-tile" href="/c/@c.Slug"><strong>@c.Name</strong><span>@c.ProductCount products</span></a>
+                <a class="yb-tile" href="/c/@c.Slug"><span class="yb-tile-ic"><img src="/Images/@(CatIcon(c.Slug)).png" alt="" loading="lazy" /></span><span class="yb-tile-tx"><strong>@c.Name</strong>@if (c.ProductCount > 0) { <span>@c.ProductCount items</span> }</span></a>
             }
         }
     </div>
-</section>
-<section class="container yb-section">
-    <div class="yb-sec-head"><h2>Featured</h2><a href="/Catalog/Index">View all &rarr;</a></div>
-    @Html.Partial("_ProductGrid", featured ?? new System.Collections.Generic.List<Ecommerce.Core.ViewModels.ProductCardViewModel>())
-</section>
-<section class="container yb-section">
-    <div class="yb-sec-head"><h2>New arrivals</h2><a href="/Catalog/Index?sort=newest">View all &rarr;</a></div>
-    @Html.Partial("_ProductGrid", fresh ?? new System.Collections.Generic.List<Ecommerce.Core.ViewModels.ProductCardViewModel>())
-</section>
-@if (deals != null && deals.Count > 0) {
-<section class="container yb-section">
-    <div class="yb-sec-head"><h2>Deals of the week</h2><a href="/Catalog/Index?sort=price_asc">Bargains &rarr;</a></div>
-    @Html.Partial("_ProductGrid", deals)
-</section>
-}
+    <section class="yb-section">
+        <div class="yb-sec-head"><div><span class="yb-eyebrow">Handpicked</span><h2>Featured products</h2><p>Highlights from across the store.</p></div><a href="/Catalog/Index">View all &rarr;</a></div>
+        @Html.Partial("_ProductGrid", featured ?? new System.Collections.Generic.List<Ecommerce.Core.ViewModels.ProductCardViewModel>())
+    </section>
+    <section class="yb-section">
+        <div class="yb-sec-head"><div><span class="yb-eyebrow">Just landed</span><h2>New arrivals</h2><p>The latest additions to the catalogue.</p></div><a href="/Catalog/Index?sort=newest">View all &rarr;</a></div>
+        @Html.Partial("_ProductGrid", fresh ?? new System.Collections.Generic.List<Ecommerce.Core.ViewModels.ProductCardViewModel>())
+    </section>
+    @if (deals != null && deals.Count > 0) {
+    <section class="yb-section">
+        <div class="yb-sec-head"><div><span class="yb-eyebrow">Save more</span><h2>Discounted products</h2><p>Genuine markdowns, while stocks last.</p></div><a href="/Catalog/Index?sort=price_asc">Bargains &rarr;</a></div>
+        @Html.Partial("_ProductGrid", deals)
+    </section>
+    }
+</div>

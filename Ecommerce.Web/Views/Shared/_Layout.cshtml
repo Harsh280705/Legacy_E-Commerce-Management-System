@@ -2,25 +2,42 @@
 @{
     Layout = null;
     var cats = ViewBag.Categories as System.Collections.Generic.IList<CategoryNavViewModel>;
+    string ctl = (ViewContext.RouteData.Values["controller"] as string ?? "").ToLowerInvariant();
+    string act = (ViewContext.RouteData.Values["action"] as string ?? "").ToLowerInvariant();
+    Func<string, string, string> on = (c, a) => (ctl == c && (a == null || act == a)) ? "on" : "";
 }
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Yantra Bazaar — fashion, footwear, home essentials and tech at honest prices. Demo storefront." />
     <title>@(ViewBag.Title ?? "Yantra Bazaar") - Yantra Bazaar</title>
     <link rel="stylesheet" href="/Content/bootstrap.min.css" />
     <link rel="stylesheet" href="/Content/site.css" />
 </head>
 <body>
     <a class="yb-skip" href="#yb-content">Skip to content</a>
-    @Html.Partial("_Header")
-    <main class="yb-main" id="yb-content">
-        @if (TempData["Notice"] != null) { <div class="container"><div class="alert alert-success yb-alert">@TempData["Notice"]</div></div> }
-        @if (TempData["Error"] != null) { <div class="container"><div class="alert alert-danger yb-alert">@TempData["Error"]</div></div> }
-        @RenderBody()
-    </main>
-    @Html.Partial("_Footer")
+    <div class="yb-stage">
+        <div class="yb-app">
+            <nav class="yb-rail" aria-label="Primary">
+                <a class="yb-rail-logo" href="/" title="Yantra Bazaar home" aria-label="Yantra Bazaar home">Y</a>
+                <a href="/" title="Home" aria-label="Home" class="@on("home", "index")"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5" /><path d="M5 9.5V21h14V9.5" /><path d="M10 21v-6h4v6" /></svg></a>
+                <a href="/Catalog/Index" title="Shop all products" aria-label="Shop all products" class="@on("catalog", null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></svg></a>
+                <a href="/Cart/Index" title="Your cart" aria-label="Your cart" class="@on("cart", null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 12.2a1 1 0 0 0 1 .8h8.9a1 1 0 0 0 1-.8L20 8H6" /><circle cx="9.5" cy="20" r="1.4" /><circle cx="17" cy="20" r="1.4" /></svg></a>
+                <a href="/Account/Profile" title="Your account" aria-label="Your account" class="@on("account", null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6" /><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0" /></svg></a>
+            </nav>
+            <div class="yb-main-col">
+                @Html.Partial("_Header")
+                <main class="yb-main" id="yb-content">
+                    @if (TempData["Notice"] != null) { <div class="yb-alert-wrap"><div class="alert alert-success yb-alert">@TempData["Notice"]</div></div> }
+                    @if (TempData["Error"] != null) { <div class="yb-alert-wrap"><div class="alert alert-danger yb-alert">@TempData["Error"]</div></div> }
+                    @RenderBody()
+                </main>
+                @Html.Partial("_Footer")
+            </div>
+        </div>
+    </div>
     <script src="/Scripts/jquery-3.4.1.min.js"></script>
     <script src="/Scripts/bootstrap.min.js"></script>
     <script src="/Scripts/jquery.validate.min.js"></script>

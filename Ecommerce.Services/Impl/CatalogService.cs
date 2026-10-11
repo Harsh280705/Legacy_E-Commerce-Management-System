@@ -42,13 +42,17 @@ namespace Ecommerce.Services.Impl
         private static IQueryable<Product> ApplySort(IQueryable<Product> q, string sort)
         {
             // Deterministic secondary key (ProductId) keeps pagination stable.
+            // Default ("recommended"): curated items first, then newest. Seeded
+            // same-name variants carry interleaved timestamps, so this also keeps
+            // first-page grids photo-diverse instead of clustering one family.
             switch ((sort ?? "").ToLowerInvariant())
             {
                 case "price_asc": return q.OrderBy(p => p.Price).ThenBy(p => p.ProductId);
                 case "price_desc": return q.OrderByDescending(p => p.Price).ThenBy(p => p.ProductId);
                 case "name_desc": return q.OrderByDescending(p => p.Name).ThenBy(p => p.ProductId);
+                case "name_asc": return q.OrderBy(p => p.Name).ThenBy(p => p.ProductId);
                 case "newest": return q.OrderByDescending(p => p.CreatedUtc).ThenBy(p => p.ProductId);
-                default: return q.OrderBy(p => p.Name).ThenBy(p => p.ProductId);
+                default: return q.OrderByDescending(p => p.IsFeatured).ThenByDescending(p => p.IsNewArrival).ThenByDescending(p => p.CreatedUtc).ThenBy(p => p.ProductId);
             }
         }
 
