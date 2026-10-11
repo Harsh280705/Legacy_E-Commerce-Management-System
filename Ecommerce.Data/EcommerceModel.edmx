@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <edmx:Runtime>
+    <edmx:ConceptualModels>
+      <Schema Namespace="EcommerceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="EcommerceEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Categories" EntityType="EcommerceModel.Category" />
+          <EntitySet Name="Products" EntityType="EcommerceModel.Product" />
+          <EntitySet Name="ProductImages" EntityType="EcommerceModel.ProductImage" />
+          <EntitySet Name="ProductVariants" EntityType="EcommerceModel.ProductVariant" />
+          <EntitySet Name="Customers" EntityType="EcommerceModel.Customer" />
+          <EntitySet Name="CartItems" EntityType="EcommerceModel.CartItem" />
+          <EntitySet Name="Orders" EntityType="EcommerceModel.Order" />
+          <EntitySet Name="OrderLines" EntityType="EcommerceModel.OrderLine" />
+          <EntitySet Name="Addresses" EntityType="EcommerceModel.Address" />
+          <AssociationSet Name="CategoryProducts" Association="EcommerceModel.CategoryProducts">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="ProductImages_FK" Association="EcommerceModel.ProductImages_FK">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="ProductImage" EntitySet="ProductImages" />
+          </AssociationSet>
+          <AssociationSet Name="OrderLines_FK" Association="EcommerceModel.OrderLines_FK">
+            <End Role="Order" EntitySet="Orders" />
+            <End Role="OrderLine" EntitySet="OrderLines" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Category">
+          <Key><PropertyRef Name="CategoryId" /></Key>
+          <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="150" />
+          <Property Name="Slug" Type="String" Nullable="false" MaxLength="150" />
+          <Property Name="Description" Type="String" MaxLength="1000" />
+          <Property Name="ImageUrl" Type="String" MaxLength="500" />
+          <Property Name="ParentCategoryId" Type="Int32" />
+          <Property Name="DisplayOrder" Type="Int32" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Products" Relationship="EcommerceModel.CategoryProducts" FromRole="Category" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key><PropertyRef Name="ProductId" /></Key>
+          <Property Name="ProductId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Sku" Type="String" MaxLength="64" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="250" />
+          <Property Name="Slug" Type="String" Nullable="false" MaxLength="250" />
+          <Property Name="ShortDescription" Type="String" MaxLength="500" />
+          <Property Name="Description" Type="String" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="CompareAtPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="DiscountPercent" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="StockQuantity" Type="Int32" Nullable="false" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="IsFeatured" Type="Boolean" Nullable="false" />
+          <Property Name="IsNewArrival" Type="Boolean" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedUtc" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="Category" Relationship="EcommerceModel.CategoryProducts" FromRole="Product" ToRole="Category" />
+        </EntityType>
+        <EntityType Name="ProductImage">
+          <Key><PropertyRef Name="ProductImageId" /></Key>
+          <Property Name="ProductImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="ImageUrl" Type="String" MaxLength="500" />
+          <Property Name="AltText" Type="String" MaxLength="250" />
+          <Property Name="DisplayOrder" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductVariant">
+          <Key><PropertyRef Name="ProductVariantId" /></Key>
+          <Property Name="ProductVariantId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="VariantName" Type="String" MaxLength="100" />
+          <Property Name="VariantValue" Type="String" MaxLength="100" />
+          <Property Name="Sku" Type="String" MaxLength="64" />
+          <Property Name="PriceAdjustment" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="StockQuantity" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key><PropertyRef Name="CustomerId" /></Key>
+          <Property Name="CustomerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AspNetUserId" Type="String" MaxLength="128" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="256" />
+          <Property Name="FirstName" Type="String" MaxLength="100" />
+          <Property Name="LastName" Type="String" MaxLength="100" />
+          <Property Name="CreatedUtc" Type="DateTime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CartItem">
+          <Key><PropertyRef Name="CartItemId" /></Key>
+          <Property Name="CartItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CartSessionId" Type="String" MaxLength="128" />
+          <Property Name="CustomerId" Type="Int32" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="ProductVariantId" Type="Int32" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="UnitPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="AddedUtc" Type="DateTime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Order">
+          <Key><PropertyRef Name="OrderId" /></Key>
+          <Property Name="OrderId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderNumber" Type="String" MaxLength="32" />
+          <Property Name="CustomerId" Type="Int32" />
+          <Property Name="CustomerEmail" Type="String" MaxLength="256" />
+          <Property Name="ShippingName" Type="String" MaxLength="200" />
+          <Property Name="ShippingAddressLine1" Type="String" MaxLength="200" />
+          <Property Name="ShippingCity" Type="String" MaxLength="100" />
+          <Property Name="ShippingPostalCode" Type="String" MaxLength="20" />
+          <Property Name="ShippingCountry" Type="String" MaxLength="100" />
+          <Property Name="ShippingMethod" Type="String" MaxLength="50" />
+          <Property Name="SubTotal" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="ShippingCost" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="TaxAmount" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="GrandTotal" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="PaymentMethod" Type="String" MaxLength="50" />
+          <Property Name="Status" Type="String" MaxLength="50" />
+          <Property Name="IdempotencyKey" Type="String" MaxLength="128" />
+          <Property Name="CreatedUtc" Type="DateTime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderLine">
+          <Key><PropertyRef Name="OrderLineId" /></Key>
+          <Property Name="OrderLineId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderId" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="ProductName" Type="String" MaxLength="250" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="UnitPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="LineTotal" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="Address">
+          <Key><PropertyRef Name="AddressId" /></Key>
+          <Property Name="AddressId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerId" Type="Int32" />
+          <Property Name="FullName" Type="String" MaxLength="200" />
+          <Property Name="Line1" Type="String" MaxLength="200" />
+          <Property Name="City" Type="String" MaxLength="100" />
+          <Property Name="PostalCode" Type="String" MaxLength="20" />
+          <Property Name="Country" Type="String" MaxLength="100" />
+          <Property Name="IsDefault" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="CategoryProducts">
+          <End Role="Category" Type="EcommerceModel.Category" Multiplicity="1" />
+          <End Role="Product" Type="EcommerceModel.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category"><PropertyRef Name="CategoryId" /></Principal>
+            <Dependent Role="Product"><PropertyRef Name="CategoryId" /></Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ProductImages_FK">
+          <End Role="Product" Type="EcommerceModel.Product" Multiplicity="1" />
+          <End Role="ProductImage" Type="EcommerceModel.ProductImage" Multiplicity="*" />
+        </Association>
+        <Association Name="OrderLines_FK">
+          <End Role="Order" Type="EcommerceModel.Order" Multiplicity="1" />
+          <End Role="OrderLine" Type="EcommerceModel.OrderLine" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+  </edmx:Runtime>
+  <edmx:Designer>
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <edmx:Diagrams />
+  </edmx:Designer>
+</edmx:Edmx>

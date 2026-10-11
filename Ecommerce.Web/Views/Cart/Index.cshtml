@@ -1,0 +1,6 @@
+@model Ecommerce.Core.ViewModels.CartViewModel
+@{ ViewBag.Title = "Cart"; }
+<div class="container yb-page">
+    <h1>Your cart</h1>
+    @Html.Partial("_CartLines", Model)
+</div>

@@ -1,0 +1,58 @@
+@model Ecommerce.Core.ViewModels.CategoryPageViewModel
+@{
+    ViewBag.Title = Model.Name;
+    int size = ViewBag.Size != null ? (int)ViewBag.Size : 12;
+    string mode = (ViewBag.Mode as string) ?? "pagination";
+    string sort = (Model.Sort as string) ?? "name_asc";
+    bool hasMore = Model.Page * Model.PageSize < Model.TotalCount;
+    string hasMoreJs = hasMore ? "true" : "false";
+    string pagPressed = mode == "pagination" ? "true" : "false";
+    string infPressed = mode == "infinite" ? "true" : "false";
+}
+<div class="container yb-page">
+    <h1>@Model.Name</h1>
+    @if (!string.IsNullOrEmpty(Model.Description)) { <p class="text-muted">@Model.Description</p> }
+    @if (Model.ChildCategories.Count > 0) {
+        <div class="yb-cat-tiles">
+            @foreach (var c in Model.ChildCategories) { <a class="yb-tile" href="/c/@c.Slug"><strong>@c.Name</strong></a> }
+        </div>
+    }
+    <form method="get" class="yb-filters" id="filter-form" aria-label="Product filters">
+        <select name="sort" class="form-control" id="sort-sel" aria-label="Sort products">
+            <option value="name_asc" @(sort=="name_asc"?"selected":"")>Name A–Z</option>
+            <option value="name_desc" @(sort=="name_desc"?"selected":"")>Name Z–A</option>
+            <option value="price_asc" @(sort=="price_asc"?"selected":"")>Price low–high</option>
+            <option value="price_desc" @(sort=="price_desc"?"selected":"")>Price high–low</option>
+            <option value="newest" @(sort=="newest"?"selected":"")>Newest</option>
+        </select>
+        <select name="size" class="form-control" id="size-sel" aria-label="Products per page">
+            <option value="12" @(size==12?"selected":"")>12 / page</option>
+            <option value="24" @(size==24?"selected":"")>24 / page</option>
+        </select>
+        <input type="hidden" name="mode" value="@mode" />
+        <button class="btn btn-default" type="submit">Sort</button>
+    </form>
+    <div class="yb-browse-bar">
+        <p class="text-muted yb-result-count" role="status">@Model.TotalCount product(s) in @Model.Name</p>
+        <div class="btn-group yb-mode-toggle" role="group" aria-label="Browsing mode">
+            <a href="/c/@Model.Slug?sort=@sort&size=@size&mode=pagination" class="btn btn-default btn-sm @(mode=="pagination"?"active":"")" aria-pressed="@pagPressed">Pagination</a>
+            <a href="/c/@Model.Slug?sort=@sort&size=@size&mode=infinite" class="btn btn-default btn-sm @(mode=="infinite"?"active":"")" aria-pressed="@infPressed">Infinite scroll</a>
+        </div>
+    </div>
+    <div id="product-grid">@Html.Partial("_ProductGrid", Model.Products)</div>
+    @if (mode == "pagination") {
+    <nav aria-label="Pages"><ul class="pagination" id="pager">
+        @if (Model.Page > 1) { <li><a href="/c/@Model.Slug?sort=@sort&size=@size&mode=pagination&page=@(Model.Page-1)" data-page="@(Model.Page-1)" aria-label="Previous page">&laquo;</a></li> }
+        @for (int i = 1; i <= Model.TotalPages && i <= 20; i++) {
+            <li class="@(i==Model.Page?"active":"")"><a href="/c/@Model.Slug?sort=@sort&size=@size&mode=pagination&page=@i" data-page="@i" aria-label="Page @i">@i</a></li>
+        }
+                    @if (Model.Page < Model.TotalPages) { <li><a href="/c/@Model.Slug?sort=@sort&size=@size&mode=pagination&page=@(Model.Page+1)" data-page="@(Model.Page+1)" aria-label="Next page">&raquo;</a></li> }
+    </ul></nav>
+    } else {
+    <div id="infinite-zone" class="yb-infinite" data-next="@(Model.Page + 1)" data-hasmore="@hasMoreJs">
+        <div id="infinite-status" class="text-muted" role="status"></div>
+        <button type="button" id="load-more" class="btn btn-default btn-lg btn-block">Load more</button>
+    </div>
+    }
+</div>
+@section scripts { <script>YB_GRID = { slug: '@Model.Slug', sort: '@sort', size: @size, mode: '@mode', page: @Model.Page, hasMore: @hasMoreJs };</script> }

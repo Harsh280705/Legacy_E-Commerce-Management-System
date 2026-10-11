@@ -1,0 +1,16 @@
+@{
+    ViewBag.Title = "Profile";
+    var orders = ViewBag.Orders as System.Collections.Generic.IList<Ecommerce.Core.ViewModels.OrderHistoryItemViewModel>;
+}
+<div class="container yb-page">
+    <h1>My account</h1>
+    <p>Signed in as <strong>@User.Identity.Name</strong></p>
+    <p><a href="/Account/Orders" class="btn btn-default">Order history</a>
+    <form method="post" action="/Account/LogOff" style="display:inline">@Html.Raw(Context.Items["AF_TOKEN_HTML"])<button class="btn btn-link" type="submit">Logout</button></form></p>
+    <h2>Recent orders</h2>
+    @if (orders == null || orders.Count == 0) { <p class="text-muted">No orders yet. <a href="/Catalog/Index">Start shopping</a></p> }
+    else {
+        <table class="table"><thead><tr><th>Order</th><th>Date</th><th>Total</th><th>Status</th></tr></thead>
+        <tbody>@foreach (var o in orders) { <tr><td>@o.OrderNumber</td><td>@o.CreatedUtc.ToString("yyyy-MM-dd")</td><td>&#8377;@o.GrandTotal.ToString("N2")</td><td>@o.Status</td></tr> }</tbody></table>
+    }
+</div>

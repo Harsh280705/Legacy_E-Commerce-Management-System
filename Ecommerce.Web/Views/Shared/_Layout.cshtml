@@ -1,0 +1,31 @@
+@using Ecommerce.Core.ViewModels
+@{
+    Layout = null;
+    var cats = ViewBag.Categories as System.Collections.Generic.IList<CategoryNavViewModel>;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@(ViewBag.Title ?? "Yantra Bazaar") - Yantra Bazaar</title>
+    <link rel="stylesheet" href="/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="/Content/site.css" />
+</head>
+<body>
+    <a class="yb-skip" href="#yb-content">Skip to content</a>
+    @Html.Partial("_Header")
+    <main class="yb-main" id="yb-content">
+        @if (TempData["Notice"] != null) { <div class="container"><div class="alert alert-success yb-alert">@TempData["Notice"]</div></div> }
+        @if (TempData["Error"] != null) { <div class="container"><div class="alert alert-danger yb-alert">@TempData["Error"]</div></div> }
+        @RenderBody()
+    </main>
+    @Html.Partial("_Footer")
+    <script src="/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="/Scripts/bootstrap.min.js"></script>
+    <script src="/Scripts/jquery.validate.min.js"></script>
+    <script src="/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="/Scripts/site.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

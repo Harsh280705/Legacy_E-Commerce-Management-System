@@ -1,0 +1,8 @@
+@{
+    // Single anti-forgery token per request: generated once here (this also sets
+    // the cookie), then reused verbatim by every form/partial on the page via
+    // Context.Items["AF_TOKEN_HTML"]. Verified: under Mono/XSP only the first
+    // token issued per response validates, so duplicates must share one value.
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Context.Items["AF_TOKEN_HTML"] = Html.AntiForgeryToken().ToHtmlString();
+}

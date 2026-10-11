@@ -1,0 +1,12 @@
+@model Ecommerce.Core.ViewModels.OrderConfirmationViewModel
+@{ ViewBag.Title = "Order confirmed"; }
+<div class="container yb-page">
+    <div class="yb-success">
+        <h1>Thank you! Order placed.</h1>
+        <p>Order <strong>@Model.OrderNumber</strong> &middot; &#8377;@Model.GrandTotal.ToString("N2") &middot; @Model.Status</p>
+        <p class="text-muted">A confirmation was “sent” to @Model.Email (demo — no email is actually sent).</p>
+        <table class="table"><thead><tr><th>Item</th><th>Qty</th><th>Total</th></tr></thead>
+        <tbody>@foreach (var l in Model.Lines) { <tr><td>@l.ProductName @l.VariantLabel</td><td>@l.Quantity</td><td>&#8377;@l.LineTotal.ToString("N2")</td></tr> }</tbody></table>
+        <p><a href="/Catalog/Index" class="btn btn-primary">Continue shopping</a> <a href="/Account/Orders" class="btn btn-default">View orders</a></p>
+    </div>
+</div>

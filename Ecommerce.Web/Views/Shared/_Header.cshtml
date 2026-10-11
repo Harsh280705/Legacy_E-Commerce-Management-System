@@ -1,0 +1,72 @@
+@using Ecommerce.Core.ViewModels
+@{
+    var cats = ViewBag.Categories as System.Collections.Generic.IList<CategoryNavViewModel>;
+}
+<header class="yb-header">
+    <div class="yb-topbar">
+        <div class="container yb-topbar-inner">
+            <span>Free shipping over &#8377;75 &middot; Demo store, no real payments</span>
+            <span class="yb-top-links">
+                <a href="/Home/Shipping">Shipping</a>
+                <a href="/Home/Returns">Returns</a>
+                <a href="/Home/Contact">Contact</a>
+            </span>
+        </div>
+    </div>
+    <nav class="navbar navbar-default yb-nav">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#yb-nav" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand yb-brand" href="/">Yantra<span>Bazaar</span></a>
+            </div>
+            <div class="collapse navbar-collapse" id="yb-nav">
+                <form class="navbar-form navbar-left yb-search" method="get" action="/Catalog/Index" role="search">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Search kurtas, sneakers, lamps..." value="@(ViewBag.Query ?? "")" aria-label="Search products" />
+                        <span class="input-group-btn"><button class="btn btn-primary" type="submit">Search</button></span>
+                    </div>
+                </form>
+                <ul class="nav navbar-nav navbar-right yb-actions">
+                    <li><a href="/Catalog/Index">Shop all</a></li>
+                    @if (Request.IsAuthenticated) {
+                        <li><a href="/Account/Profile">Hi, @User.Identity.Name.Split('@')[0]</a></li>
+                        <li><a href="/Account/Orders">Orders</a></li>
+                        if (User.IsInRole("Admin")) {
+                            <li><a href="/Admin">Admin</a></li>
+                        }
+                        <li>
+                            <form method="post" action="/Account/LogOff" class="yb-logoff">@Html.Raw(Context.Items["AF_TOKEN_HTML"])<button type="submit" class="btn btn-link">Logout</button></form>
+                        </li>
+                    } else {
+                        <li><a href="/Account/Login">Login</a></li>
+                        <li><a href="/Account/Register" class="btn btn-primary yb-join">Join</a></li>
+                    }
+                    <li id="mini-cart-slot"><a href="/Cart/Index" id="mini-cart-btn" class="yb-cart-link" aria-haspopup="true" aria-expanded="false" aria-controls="mini-cart-panel">Cart (<span id="cart-count">0</span>)</a></li>
+                </ul>
+            </div>
+            <div id="mini-cart-panel" class="yb-minicart-panel" style="display:none">
+                <div id="mini-cart-body"><p class="yb-empty">Loading cart...</p></div>
+            </div>
+        </div>
+    </nav>
+    <div class="yb-catbar">
+        <div class="container">
+            @if (cats != null) {
+                foreach (var c in cats) {
+                    <div class="yb-cat">
+                        <a href="/c/@c.Slug">@c.Name</a>
+                        @if (c.Children.Count > 0) {
+                            <div class="yb-drop">
+                                @foreach (var ch in c.Children) { <a href="/c/@ch.Slug">@ch.Name</a> }
+                            </div>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</header>
+@Html.Raw(Context.Items["AF_TOKEN_HTML"])

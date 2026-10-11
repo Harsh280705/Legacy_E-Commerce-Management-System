@@ -1,0 +1,15 @@
+@model Ecommerce.Core.ViewModels.RegisterViewModel
+@{ ViewBag.Title = "Register"; }
+<div class="container yb-page yb-narrow">
+    <h1>Create account</h1>
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "yb-form" })) {
+        @Html.Raw(Context.Items["AF_TOKEN_HTML"])
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group"><label>First name</label>@Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })</div>
+        <div class="form-group"><label>Last name</label>@Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })</div>
+        <div class="form-group"><label>Email</label>@Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })@Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })</div>
+        <div class="form-group"><label>Password (min 6 chars)</label>@Html.PasswordFor(m => m.Password, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })</div>
+        <button class="btn btn-primary btn-block" type="submit">Register</button>
+    }
+    <p>Have an account? <a href="/Account/Login">Login</a></p>
+</div>

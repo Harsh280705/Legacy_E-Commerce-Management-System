@@ -1,0 +1,13 @@
+.git/
+.vs/
+**/bin/
+**/obj/
+packages/
+*.user
+*.suo
+.env
+*.log
+*.bak
+*.tmp
+db/gen_seed.py
+_backup_*/

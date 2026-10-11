@@ -1,0 +1,33 @@
+@model Ecommerce.Core.ViewModels.ProductDetailViewModel
+@{ ViewBag.Title = "Inspect product"; }
+<div class="container yb-page">
+    <h1>@Model.Name</h1>
+    <p><a href="/Admin/Products">Back to products</a> &middot; <a href="/p/@Model.Slug">View in store</a></p>
+    <div class="row">
+        <div class="col-sm-6">
+            <img src="@(Model.Images.Count>0?Model.Images[0].ImageUrl:"/Images/placeholder.png")" alt="@Model.Name" class="img-responsive" onerror="this.src='/Images/placeholder.png'" />
+            <p class="text-muted">@Model.ShortDescription</p>
+            <p>Price: <strong>&#8377;@Model.Price.ToString("N2")</strong> &middot; Category: @Model.CategoryName</p>
+            @if (Model.Variants.Count > 0) {
+            <h3>Variants (@Model.Variants.Count)</h3>
+            <table class="table"><thead><tr><th>Name</th><th>Value</th><th>Adj.</th><th>Stock</th></tr></thead><tbody>
+            @foreach (var v in Model.Variants) { <tr><td>@v.Name</td><td>@v.Value</td><td>@(v.PriceAdjustment.HasValue ? v.PriceAdjustment.Value.ToString("N2") : "—")</td><td>@v.Stock</td></tr> }
+            </tbody></table>
+            }
+        </div>
+        <div class="col-sm-6">
+            <h2>Stock &amp; availability</h2>
+            <form method="post" action="/Admin/UpdateStock" class="yb-form">
+                @Html.Raw(Context.Items["AF_TOKEN_HTML"])
+                <input type="hidden" name="ProductId" value="@Model.ProductId" />
+                <div class="form-group">
+                    <label for="StockQuantity">Stock quantity</label>
+                    <input type="number" name="StockQuantity" id="StockQuantity" class="form-control" value="@Model.StockQuantity" min="0" max="100000" />
+                </div>
+                <div class="checkbox"><label><input type="checkbox" name="IsActive" value="true" @(Model.IsActive ? "checked" : "") /> Active (visible in store)</label></div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+            <p class="text-muted">Uncheck + Save deactivates the product (hidden from the storefront, kept in the database).</p>
+        </div>
+    </div>
+</div>

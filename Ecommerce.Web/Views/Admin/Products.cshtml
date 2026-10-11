@@ -1,0 +1,52 @@
+@model Ecommerce.Core.Common.PagedResult<Ecommerce.Core.ViewModels.ProductCardViewModel>
+@{
+    ViewBag.Title = "Admin products";
+    var cats = ViewBag.Categories as System.Collections.Generic.IList<Ecommerce.Core.ViewModels.CategoryNavViewModel>;
+    string sort = (ViewBag.Sort as string) ?? "name_asc";
+    string q = (ViewBag.Query as string) ?? "";
+}
+<div class="container yb-page">
+    <h1>Products</h1>
+    <p><a href="/Admin/Index">Dashboard</a></p>
+    <form method="get" action="/Admin/Products" class="yb-filters" role="search" aria-label="Admin product filters">
+        <input type="text" name="q" class="form-control" placeholder="Search..." value="@q" aria-label="Search products" />
+        <select name="categoryId" class="form-control" aria-label="Filter by category">
+            <option value="">All categories</option>
+            @if (cats != null) {
+                foreach (var c in cats) {
+                    <option value="@c.CategoryId" @((ViewBag.CategoryId as int?) == c.CategoryId ? "selected" : "")>@c.Name</option>
+                    foreach (var ch in c.Children) { <option value="@ch.CategoryId" @((ViewBag.CategoryId as int?) == ch.CategoryId ? "selected" : "")>&mdash; @ch.Name</option> }
+                }
+            }
+        </select>
+        <select name="sort" class="form-control" aria-label="Sort products">
+            <option value="name_asc" @(sort=="name_asc"?"selected":"")>Name A–Z</option>
+            <option value="price_asc" @(sort=="price_asc"?"selected":"")>Price low–high</option>
+            <option value="price_desc" @(sort=="price_desc"?"selected":"")>Price high–low</option>
+            <option value="newest" @(sort=="newest"?"selected":"")>Newest</option>
+        </select>
+        <button class="btn btn-default" type="submit">Apply</button>
+    </form>
+    <p class="text-muted" role="status">@Model.TotalCount product(s)</p>
+    <div class="table-responsive"><table class="table">
+        <thead><tr><th>ID</th><th>Product</th><th>Price</th><th>Stock</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var p in Model.Items) {
+            <tr>
+                <td>@p.ProductId</td>
+                <td><a href="/Admin/Product/@p.ProductId">@p.Name</a><div class="text-muted">@p.CategoryName</div></td>
+                <td>&#8377;@p.Price.ToString("N2")</td>
+                <td>@p.StockQuantity</td>
+                <td>@(p.InStock ? "In stock" : "Out of stock")</td>
+                <td><a href="/Admin/Product/@p.ProductId" class="btn btn-default btn-sm">Inspect</a></td>
+            </tr>
+        }
+        </tbody>
+    </table></div>
+    @if (Model.Items.Count == 0) { <div class="yb-empty-state"><h3>No products match</h3><p><a href="/Admin/Products" class="btn btn-default">Clear filters</a></p></div> }
+    <nav aria-label="Pages"><ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages && i <= 20; i++) {
+            <li class="@(i==Model.Page?"active":"")"><a href="/Admin/Products?q=@q&sort=@sort&page=@i" aria-label="Page @i">@i</a></li>
+        }
+    </ul></nav>
+</div>

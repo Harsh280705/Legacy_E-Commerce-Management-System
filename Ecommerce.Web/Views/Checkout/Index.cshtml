@@ -1,0 +1,42 @@
+@model Ecommerce.Core.ViewModels.CheckoutSummaryViewModel
+@{ ViewBag.Title = "Checkout"; }
+<div class="container yb-page">
+    <h1>Checkout</h1>
+    <div class="row">
+        <div class="col-sm-7">
+            <form method="post" action="/Checkout/Place" id="checkout-form" class="yb-form">
+                @Html.Raw(Context.Items["AF_TOKEN_HTML"])
+                <input type="hidden" name="idempotencyKey" value="@ViewBag.IdempotencyKey" />
+                <h3>1. Address</h3>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group"><label>Full name</label>@Html.TextBoxFor(m => m.Form.FullName, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Form.FullName, "", new { @class = "text-danger" })</div>
+                <div class="form-group"><label>Email</label>@Html.TextBoxFor(m => m.Form.Email, new { @class = "form-control", type = "email" })@Html.ValidationMessageFor(m => m.Form.Email, "", new { @class = "text-danger" })</div>
+                <div class="form-group"><label>Address line 1</label>@Html.TextBoxFor(m => m.Form.AddressLine1, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Form.AddressLine1, "", new { @class = "text-danger" })</div>
+                <div class="form-group"><label>Address line 2</label>@Html.TextBoxFor(m => m.Form.AddressLine2, new { @class = "form-control" })</div>
+                <div class="row">
+                    <div class="col-xs-6"><div class="form-group"><label>City</label>@Html.TextBoxFor(m => m.Form.City, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Form.City, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-xs-6"><div class="form-group"><label>State</label>@Html.TextBoxFor(m => m.Form.State, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Form.State, "", new { @class = "text-danger" })</div></div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6"><div class="form-group"><label>Postal code</label>@Html.TextBoxFor(m => m.Form.PostalCode, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Form.PostalCode, "", new { @class = "text-danger" })</div></div>
+                    <div class="col-xs-6"><div class="form-group"><label>Country</label>@Html.TextBoxFor(m => m.Form.Country, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Form.Country, "", new { @class = "text-danger" })</div></div>
+                </div>
+                <div class="form-group"><label>Phone</label>@Html.TextBoxFor(m => m.Form.Phone, new { @class = "form-control" })</div>
+                <h3>2. Shipping</h3>
+                <div class="radio"><label><input type="radio" name="Form.ShippingMethod" value="standard" checked /> Standard — free over &#8377;75 (else &#8377;5.99)</label></div>
+                <div class="radio"><label><input type="radio" name="Form.ShippingMethod" value="express" /> Express — &#8377;12.99 (free over &#8377;150)</label></div>
+                <div class="radio"><label><input type="radio" name="Form.ShippingMethod" value="priority" /> Priority — &#8377;24.99 (free over &#8377;200)</label></div>
+                <h3>3. Payment (demo only)</h3>
+                <div class="radio"><label><input type="radio" name="Form.PaymentMethod" value="cod" checked /> Cash on delivery</label></div>
+                <div class="radio"><label><input type="radio" name="Form.PaymentMethod" value="upi_demo" /> UPI (demo)</label></div>
+                <div class="radio"><label><input type="radio" name="Form.PaymentMethod" value="card_demo" /> Card (demo — no details collected)</label></div>
+                <div class="radio"><label><input type="radio" name="Form.PaymentMethod" value="netbanking_demo" /> Netbanking (demo)</label></div>
+                <button type="submit" class="btn btn-primary btn-lg" id="place-order">4. Place order</button>
+            </form>
+        </div>
+        <div class="col-sm-5">
+            <h3>Order summary</h3>
+            @Html.Partial("_CartLines", Model.Cart)
+        </div>
+    </div>
+</div>

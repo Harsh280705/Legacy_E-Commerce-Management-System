@@ -1,0 +1,58 @@
+@model Ecommerce.Core.ViewModels.CartViewModel
+@{
+    string msg = (ViewBag.CartMessage as string) ?? "";
+    bool ok = ViewBag.CartOk == null ? true : (bool)ViewBag.CartOk;
+}
+<div id="cart-lines" data-message="@msg" data-ok="@(ok ? "true" : "false")">
+    @if (Model.Lines.Count == 0) {
+        <div class="yb-empty-state" role="status">
+            <h3>Your cart is empty</h3>
+            <p>Beautiful things await. Start with our best sellers.</p>
+            <p><a href="/Catalog/Index" class="btn btn-primary btn-lg">Browse products</a></p>
+        </div>
+    } else {
+        <div class="table-responsive">
+        <table class="table yb-cart-table">
+            <thead><tr><th scope="col">Item</th><th scope="col">Price</th><th scope="col">Qty</th><th scope="col">Total</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+            <tbody>
+                @foreach (var l in Model.Lines) {
+                    <tr data-line="@l.CartItemId" data-stock="@l.StockAvailable">
+                        <td>
+                            <img class="yb-thumb" src="@l.ImageUrl" alt="@l.ProductName" onerror="this.src='/Images/placeholder.png'" />
+                            <a href="/p/@l.ProductSlug">@l.ProductName</a>
+                            @if (!string.IsNullOrEmpty(l.VariantLabel)) { <div class="text-muted yb-variant">@l.VariantLabel</div> }
+                            @if (l.StockAvailable <= 5) { <div class="yb-lowstock">Only @l.StockAvailable left</div> }
+                        </td>
+                        <td class="yb-nowrap">&#8377;@l.UnitPrice.ToString("N2")</td>
+                        <td>
+                            <div class="yb-qty-group" role="group" aria-label="Quantity for @l.ProductName">
+                                <button type="button" class="btn btn-default yb-qty-btn" data-id="@l.CartItemId" data-delta="-1" aria-label="Decrease quantity">−</button>
+                                <input type="number" class="form-control yb-qty" value="@l.Quantity" min="0" max="99" data-id="@l.CartItemId" data-name="@l.ProductName" aria-label="Quantity for @l.ProductName" />
+                                <button type="button" class="btn btn-default yb-qty-btn" data-id="@l.CartItemId" data-delta="1" aria-label="Increase quantity">+</button>
+                            </div>
+                        </td>
+                        <td class="yb-nowrap yb-line-total">&#8377;@l.LineTotal.ToString("N2")</td>
+                        <td><button type="button" class="btn btn-link yb-remove" data-id="@l.CartItemId" data-name="@l.ProductName">Remove</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 yb-cart-continue">
+                <a href="/Catalog/Index">&larr; Continue shopping</a>
+            </div>
+            <div class="col-sm-6">
+                <div class="yb-totals" aria-live="polite">
+                    <div><span>Subtotal (@Model.ItemCount item(s)):</span> <strong>&#8377;@Model.SubTotal.ToString("N2")</strong></div>
+                    <div><span>Shipping:</span> <strong>&#8377;@Model.Shipping.ToString("N2")</strong></div>
+                    <div><span>Tax (8%):</span> <strong>&#8377;@Model.Tax.ToString("N2")</strong></div>
+                    <div class="yb-grand"><span>Total:</span> <strong>&#8377;@Model.GrandTotal.ToString("N2")</strong></div>
+                    @if (ViewBag.HideCartActions == null || !(bool)ViewBag.HideCartActions) {
+                    <a href="/Checkout/Index" class="btn btn-primary btn-lg btn-block yb-checkout-btn">Proceed to checkout</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

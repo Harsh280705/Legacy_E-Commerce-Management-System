@@ -1,0 +1,12 @@
+@model System.Collections.Generic.IList<Ecommerce.Core.ViewModels.ProductCardViewModel>
+@if (Model == null || Model.Count == 0) {
+    <div class="yb-empty-state">
+        <h3>No products found</h3>
+        <p>Try a different search term or category.</p>
+        <a href="/Catalog/Index" class="btn btn-default">Clear filters</a>
+    </div>
+} else {
+    <div class="yb-grid">
+        @foreach (var p in Model) { @Html.Partial("_ProductCard", p) }
+    </div>
+}

@@ -1,0 +1,53 @@
+LegacyEcommerce — copy-paste PowerShell (run from the project folder).
+
+# 0. Docker available?
+docker version
+docker compose version
+
+# 1. First-time config (keep .env private)
+Copy-Item .env.example .env
+notepad .env   # set a strong DB_PASSWORD
+
+# 2. Build (first time only / after code changes)
+docker compose -p legacyecommerce build web
+
+# 3. Start
+docker compose -p legacyecommerce up -d
+
+# 4. Health (wait ~60-90s first boot)
+docker compose -p legacyecommerce ps
+curl.exe -s http://localhost:8085/health
+# expect: OK
+
+# 5. Open site
+start http://localhost:8085
+
+# 6. Logs
+docker compose -p legacyecommerce logs web --tail 50
+docker compose -p legacyecommerce logs db --tail 20
+docker logs legacyecommerce-dbinit --tail 5
+
+# 7. Tests
+powershell -ExecutionPolicy Bypass -File tests/smoke.ps1
+powershell -ExecutionPolicy Bypass -File tests/extended.ps1
+
+# 8. Stop (KEEPS data)
+docker compose -p legacyecommerce stop
+
+# 9. Restart (data intact)
+docker compose -p legacyecommerce start
+
+# 10. Rebuild after source changes
+docker compose -p legacyecommerce build web
+docker compose -p legacyecommerce up -d
+
+# 11. Volume location
+docker volume inspect legacyecommerce_mssql_data --format "{{.Mountpoint}}"
+
+# 12. Port conflict check (no killing)
+netstat -ano | Select-String ":8085"
+
+# DANGER: full reset of THIS project's data only (never auto-run)
+# docker compose -p legacyecommerce down
+# docker volume rm legacyecommerce_mssql_data
+# docker compose -p legacyecommerce up -d

@@ -1,0 +1,15 @@
+.env
+packages/
+Ecommerce.Core/bin/
+Ecommerce.Core/obj/
+Ecommerce.Data/bin/
+Ecommerce.Data/obj/
+Ecommerce.Services/bin/
+Ecommerce.Services/obj/
+Ecommerce.Web/bin/
+Ecommerce.Web/obj/
+.vs/
+*.user
+*.suo
+TestResults/
+_backup_*/

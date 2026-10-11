@@ -1,0 +1,4 @@
+@model System.Collections.Generic.IList<Ecommerce.Core.ViewModels.CategoryNavViewModel>
+@if (Model != null) {
+    foreach (var c in Model) { <a href="/c/@c.Slug" class="list-group-item">@c.Name <span class="badge">@c.ProductCount</span></a> }
+}

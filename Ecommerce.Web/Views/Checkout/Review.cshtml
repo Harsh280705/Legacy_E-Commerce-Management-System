@@ -1,0 +1,30 @@
+@model Ecommerce.Core.ViewModels.CheckoutSummaryViewModel
+@{ ViewBag.Title = "Review order"; }
+<div class="container yb-page">
+    <h1>Review your order</h1>
+    <p class="text-muted">Step 4 of 5 — check everything below. No order is placed until you confirm.</p>
+    <div class="row">
+        <div class="col-sm-7">
+            <div class="yb-form yb-review">
+                <h3>Shipping to</h3>
+                <p><strong>@Model.Form.FullName</strong><br />
+                @Model.Form.AddressLine1 @Model.Form.AddressLine2<br />
+                @Model.Form.City, @Model.Form.State @Model.Form.PostalCode<br />
+                @Model.Form.Country @if (!string.IsNullOrEmpty(Model.Form.Phone)) { <span>&middot; @Model.Form.Phone</span> }</p>
+                <h3>Shipping &amp; payment</h3>
+                <p>Method: <strong>@Model.Form.ShippingMethod</strong><br />
+                Payment: <strong>@Model.Form.PaymentMethod</strong> <span class="text-muted">(demo — no real charge)</span></p>
+                <form method="post" action="/Checkout/Confirm" id="confirm-form">
+                    @Html.Raw(Context.Items["AF_TOKEN_HTML"])
+                    <button type="submit" class="btn btn-primary btn-lg" id="confirm-order">5. Confirm &amp; place order</button>
+                    <a href="/Checkout/Index" class="btn btn-default btn-lg">Back to edit</a>
+                </form>
+            </div>
+        </div>
+        <div class="col-sm-5">
+            <h3>Order summary (server-calculated)</h3>
+            @{ ViewBag.HideCartActions = true; }
+            @Html.Partial("_CartLines", Model.Cart)
+        </div>
+    </div>
+</div>

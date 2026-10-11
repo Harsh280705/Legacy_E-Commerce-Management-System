@@ -1,0 +1,26 @@
+@model Ecommerce.Core.ViewModels.CartViewModel
+<div class="yb-minicart" role="menu" aria-label="Mini cart">
+    @if (Model.Lines.Count == 0) {
+        <p class="yb-empty" role="status">Your cart is empty. <a href="/Catalog/Index">Start shopping</a></p>
+    } else {
+        <ul class="yb-mini-list">
+            @foreach (var l in Model.Lines.Take(4)) {
+                <li>
+                    <img src="@l.ImageUrl" alt="@l.ProductName" onerror="this.src='/Images/placeholder.png'" />
+                    <span class="yb-mini-info"><strong>@l.ProductName</strong>
+                    @if (!string.IsNullOrEmpty(l.VariantLabel)) { <small>@l.VariantLabel</small> }
+                    <small>Qty @l.Quantity</small></span>
+                    <strong class="yb-mini-total">&#8377;@l.LineTotal.ToString("N2")</strong>
+                </li>
+            }
+        </ul>
+        if (Model.Lines.Count > 4) { <p class="text-muted yb-mini-more">+ @(Model.Lines.Count - 4) more item(s)</p> }
+        <div class="yb-minicart-foot">
+            <span>@Model.ItemCount item(s) &middot; <strong>&#8377;@Model.SubTotal.ToString("N2")</strong></span>
+        </div>
+        <div class="yb-mini-actions">
+            <a href="/Cart/Index" class="btn btn-default btn-sm">View cart</a>
+            <a href="/Checkout/Index" class="btn btn-primary btn-sm">Checkout</a>
+        </div>
+    }
+</div>
